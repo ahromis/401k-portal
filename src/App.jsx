@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import LoginPage from './components/ui/LoginPage';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 
 // Layout Component
-const AppLayout = ({ children }) => {
+const AppLayout = ({ children, onLogout }) => {
   return (
     <div className="min-h-screen bg-gray-50/40">
       <nav className="bg-white/70 backdrop-blur-lg border-b border-gray-100">
@@ -18,6 +19,12 @@ const AppLayout = ({ children }) => {
               <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
                 <span className="text-sm text-indigo-600 font-medium">JD</span>
               </div>
+              <button
+                onClick={onLogout}
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -198,8 +205,27 @@ const AccountPage = () => {
 
 // Main App Component
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = (credentials) => {
+    const { email, password } = credentials;
+    if (email === 'john.doe@example.com' && password === 'password1234') {
+      setIsAuthenticated(true);
+    } else {
+      alert('Invalid credentials. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
-    <AppLayout>
+    <AppLayout onLogout={handleLogout}>
       <AccountPage />
     </AppLayout>
   );
