@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useInvestments } from '../../contexts/InvestmentContext';
 
 const PreviewMatrix = ({ currentBalances, projectedBalances, contributionTypes, funds }) => {
@@ -71,6 +71,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
     investments.funds.reduce((acc, fund) => ({ ...acc, [fund.id]: '' }), {})
   );
   const [previewBalances, setPreviewBalances] = useState(null);
+  const modalRef = useRef();
 
   // Add formatCurrency function
   const formatCurrency = (amount) => {
@@ -239,11 +240,46 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
     setMode('preview-reallocate');
   };
 
+  // Handle click outside modal
+  const handleClickOutside = (event) => {
+    if (modalRef.current && !modalRef.current.contains(event.target)) {
+      handleClose();
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+      <div ref={modalRef} className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
+        {/* Close button - always visible */}
+        <button
+          onClick={handleClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          aria-label="Close modal"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
         <h2 className="text-xl font-medium text-gray-900 mb-4">Move Money</h2>
         
         {mode === 'select' && (
