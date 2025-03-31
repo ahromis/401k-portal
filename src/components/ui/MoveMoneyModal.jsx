@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useInvestments } from '../../contexts/InvestmentContext';
+import {
+  formatCurrency,
+  getBalance,
+  getFundTotal,
+  validateTransfer,
+  validateReallocation
+} from '../../utils/investmentUtils';
 
+/**
+ * Component to display a preview of balance changes
+ */
 const PreviewMatrix = ({ currentBalances, projectedBalances, contributionTypes, funds }) => {
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  if (!projectedBalances) return null;
 
-  const getBalance = (balances, fundId, typeId) => {
+  const getBalanceForMatrix = (balances, fundId, typeId) => {
     const balance = balances.find(
       b => b.fundId === parseInt(fundId) && b.contributionTypeId === parseInt(typeId)
     );
@@ -37,14 +40,14 @@ const PreviewMatrix = ({ currentBalances, projectedBalances, contributionTypes, 
               {contributionTypes.map(type => (
                 <td key={type.id} className="text-right py-2">
                   <div className="space-y-1">
-                    <div className={getBalance(projectedBalances, fund.id, type.id) !== 
-                         getBalance(currentBalances, fund.id, type.id) ? "text-indigo-600 font-medium" : ""}>
-                      {formatCurrency(getBalance(projectedBalances, fund.id, type.id))}
+                    <div className={getBalanceForMatrix(projectedBalances, fund.id, type.id) !== 
+                         getBalanceForMatrix(currentBalances, fund.id, type.id) ? "text-indigo-600 font-medium" : ""}>
+                      {formatCurrency(getBalanceForMatrix(projectedBalances, fund.id, type.id))}
                     </div>
-                    {getBalance(projectedBalances, fund.id, type.id) !== 
-                     getBalance(currentBalances, fund.id, type.id) && (
+                    {getBalanceForMatrix(projectedBalances, fund.id, type.id) !== 
+                     getBalanceForMatrix(currentBalances, fund.id, type.id) && (
                       <div className="text-xs text-gray-500">
-                        was: {formatCurrency(getBalance(currentBalances, fund.id, type.id))}
+                        was: {formatCurrency(getBalanceForMatrix(currentBalances, fund.id, type.id))}
                       </div>
                     )}
                   </div>
@@ -58,8 +61,20 @@ const PreviewMatrix = ({ currentBalances, projectedBalances, contributionTypes, 
   );
 };
 
+/**
+ * Main modal component for money movement operations
+ */
 const MoveMoneyModal = ({ isOpen, onClose }) => {
-  const { investments, transferFunds, reallocateFunds } = useInvestments();
+  const { 
+    investments, 
+    transferFunds, 
+    reallocateFunds, 
+    previewTransfer,
+    previewReallocation,
+    error: contextError 
+  } = useInvestments();
+  
+  // Modal state
   const [mode, setMode] = useState('select'); // select, transfer, reallocate, preview-transfer, preview-reallocate
   const [transferData, setTransferData] = useState({
     fromFund: '',
@@ -67,23 +82,21 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
     toFund: '',
     amount: ''
   });
-  const [allocations, setAllocations] = useState(
-    investments.funds.reduce((acc, fund) => ({ ...acc, [fund.id]: '' }), {})
-  );
+  const [allocations, setAllocations] = useState({});
   const [previewBalances, setPreviewBalances] = useState(null);
+  const [error, setError] = useState(null);
   const modalRef = useRef();
 
-  // Add formatCurrency function
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  // Initialize allocations from funds
+  useEffect(() => {
+    if (investments?.funds) {
+      setAllocations(
+        investments.funds.reduce((acc, fund) => ({ ...acc, [fund.id]: '' }), {})
+      );
+    }
+  }, [investments?.funds]);
 
-  // Make sure state is properly initialized
+  // Reset form data
   const resetTransferData = () => {
     setTransferData({
       fromFund: '',
@@ -98,146 +111,112 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
     if (!isOpen) {
       setMode('select');
       resetTransferData();
-      setAllocations(investments.funds.reduce((acc, fund) => ({ ...acc, [fund.id]: '' }), {}));
+      setError(null);
+      setPreviewBalances(null);
+      
+      if (investments?.funds) {
+        setAllocations(investments.funds.reduce((acc, fund) => ({ ...acc, [fund.id]: '' }), {}));
+      }
     }
-  }, [isOpen, investments.funds]);
+  }, [isOpen, investments?.funds]);
 
-  const handleTransferSubmit = (e) => {
-    e.preventDefault();
-    transferFunds(transferData);
-    onClose();
+  // Update error state from context
+  useEffect(() => {
+    if (contextError) {
+      setError(contextError);
+    }
+  }, [contextError]);
+
+  // Handle transfer form submission
+  const handleTransferSubmit = () => {
+    const success = transferFunds(transferData);
+    if (success) {
+      onClose();
+    }
   };
 
-  const handleReallocationSubmit = (e) => {
-    e.preventDefault();
-    const numericAllocations = Object.entries(allocations).reduce((acc, [key, value]) => ({
-      ...acc,
-      [key]: Number(value) || 0
-    }), {});
-    reallocateFunds(numericAllocations);
-    onClose();
+  // Handle reallocation form submission
+  const handleReallocationSubmit = () => {
+    const success = reallocateFunds(allocations);
+    if (success) {
+      onClose();
+    }
   };
 
+  // Update allocation for a specific fund
   const updateAllocation = (fundId, value) => {
+    // Remove leading zeros
     const cleanValue = value.replace(/^0+/, '') || '';
     setAllocations(prev => ({ ...prev, [fundId]: cleanValue }));
   };
 
+  // Calculate total allocation percentage
   const totalAllocation = Object.values(allocations).reduce((sum, val) => 
     sum + (val === '' ? 0 : Number(val)), 0
   );
 
+  // Close modal and reset state
   const handleClose = () => {
     resetTransferData();
     setMode('select');
+    setError(null);
     onClose();
   };
 
+  // Get available balance for a specific fund and type
   const getAvailableBalance = (fundId, typeId) => {
-    const balance = investments.balances.find(
-      b => b.fundId === parseInt(fundId) && b.contributionTypeId === parseInt(typeId)
-    );
-    return balance ? balance.balance : 0;
+    return getBalance(investments.balances, fundId, typeId);
   };
 
+  // Get eligible contribution types
   const eligibleContributionTypes = investments.contributionTypes.filter(
     type => type.name !== 'Loan Fund' // Exclude loan fund
   );
 
-  const calculatePreviewBalances = () => {
-    const updatedBalances = [...investments.balances];
-    const amount = parseFloat(transferData.amount);
-    
-    // Find source balance
-    const sourceBalance = updatedBalances.find(
-      b => b.fundId === parseInt(transferData.fromFund) && 
-      b.contributionTypeId === parseInt(transferData.fromType)
-    );
-
-    if (!sourceBalance) return updatedBalances;
-
-    const sourceNav = sourceBalance.nav;
-    const targetNav = updatedBalances.find(
-      b => b.fundId === parseInt(transferData.toFund) && 
-      b.contributionTypeId === parseInt(transferData.fromType)
-    )?.nav || sourceNav;
-
-    // Calculate and update preview balances
-    const unitsToTransfer = amount / sourceNav;
-    const previewSource = { ...sourceBalance };
-    previewSource.units -= unitsToTransfer;
-    previewSource.balance = previewSource.units * previewSource.nav;
-
-    let previewTarget = updatedBalances.find(
-      b => b.fundId === parseInt(transferData.toFund) && 
-      b.contributionTypeId === parseInt(transferData.fromType)
-    );
-
-    if (!previewTarget) {
-      previewTarget = {
-        fundId: parseInt(transferData.toFund),
-        contributionTypeId: parseInt(transferData.fromType),
-        units: 0,
-        nav: targetNav,
-        balance: 0
-      };
-      updatedBalances.push(previewTarget);
-    }
-
-    previewTarget = { ...previewTarget };
-    previewTarget.units += amount / targetNav;
-    previewTarget.balance = previewTarget.units * previewTarget.nav;
-
-    return updatedBalances.map(balance => {
-      if (balance.fundId === previewSource.fundId && 
-          balance.contributionTypeId === previewSource.contributionTypeId) {
-        return previewSource;
-      }
-      if (balance.fundId === previewTarget.fundId && 
-          balance.contributionTypeId === previewTarget.contributionTypeId) {
-        return previewTarget;
-      }
-      return balance;
-    });
-  };
-
+  // Preview transfer changes
   const handlePreview = (e) => {
     e.preventDefault();
-    const projectedBalances = calculatePreviewBalances();
-    setPreviewBalances(projectedBalances);
-    setMode('preview-transfer');
+    setError(null);
+    
+    // Validate the transfer request
+    const validation = validateTransfer(transferData, investments.balances);
+    if (!validation.valid) {
+      setError(validation.error);
+      return;
+    }
+    
+    // Get preview balances
+    const result = previewTransfer(transferData);
+    
+    if (result.valid) {
+      setPreviewBalances(result.projectedBalances);
+      setMode('preview-transfer');
+    } else {
+      setError(result.error);
+    }
   };
 
-  const calculateReallocationPreview = () => {
-    const updatedBalances = [...investments.balances];
-    const totalBalance = updatedBalances.reduce((sum, b) => sum + b.balance, 0);
-
-    // Calculate new balances based on allocation percentages while preserving contribution types
-    investments.funds.forEach(fund => {
-      const percentage = allocations[fund.id];
-      const targetAmount = (totalBalance * percentage) / 100;
-      
-      // Get all contribution types for this fund
-      const fundBalances = updatedBalances.filter(b => b.fundId === fund.id);
-      const fundTotal = fundBalances.reduce((sum, b) => sum + b.balance, 0);
-      
-      // Adjust each contribution type proportionally
-      fundBalances.forEach(balance => {
-        const proportion = fundTotal > 0 ? balance.balance / fundTotal : 1 / fundBalances.length;
-        const newBalance = targetAmount * proportion;
-        balance.units = newBalance / balance.nav;
-        balance.balance = balance.units * balance.nav;
-      });
-    });
-
-    return updatedBalances;
-  };
-
+  // Preview reallocation changes
   const handleReallocationPreview = (e) => {
     e.preventDefault();
-    const projectedBalances = calculateReallocationPreview();
-    setPreviewBalances(projectedBalances);
-    setMode('preview-reallocate');
+    setError(null);
+    
+    // Validate the reallocation
+    const validation = validateReallocation(allocations);
+    if (!validation.valid) {
+      setError(validation.error);
+      return;
+    }
+    
+    // Get preview balances
+    const result = previewReallocation(allocations);
+    
+    if (result.valid) {
+      setPreviewBalances(result.projectedBalances);
+      setMode('preview-reallocate');
+    } else {
+      setError(result.error);
+    }
   };
 
   // Handle click outside modal
@@ -247,6 +226,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
     }
   };
 
+  // Add event listener for clicks outside modal
   useEffect(() => {
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -281,6 +261,13 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
         </button>
 
         <h2 className="text-xl font-medium text-gray-900 mb-4">Move Money</h2>
+        
+        {/* Error message display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+            {error}
+          </div>
+        )}
         
         {mode === 'select' && (
           <div className="space-y-4">
@@ -344,11 +331,15 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
                 value={transferData.toFund}
                 onChange={(e) => setTransferData(prev => ({ ...prev, toFund: e.target.value }))}
                 required
+                disabled={!transferData.fromFund}
               >
                 <option value="">Select Fund</option>
-                {investments.funds.map(fund => (
-                  <option key={fund.id} value={fund.id}>{fund.name}</option>
-                ))}
+                {investments.funds
+                  .filter(fund => fund.id !== parseInt(transferData.fromFund))
+                  .map(fund => (
+                    <option key={fund.id} value={fund.id}>{fund.name}</option>
+                  ))
+                }
               </select>
             </div>
 
@@ -361,8 +352,9 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
                   value={transferData.amount}
                   onChange={(e) => setTransferData(prev => ({ ...prev, amount: e.target.value }))}
                   required
-                  min="0"
+                  min="0.01"
                   max={getAvailableBalance(transferData.fromFund, transferData.fromType)}
+                  step="0.01"
                 />
                 <p className="mt-1 text-sm text-gray-500">
                   Available: {formatCurrency(getAvailableBalance(transferData.fromFund, transferData.fromType))}
@@ -381,6 +373,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
+                disabled={!transferData.fromFund || !transferData.fromType || !transferData.toFund || !transferData.amount}
               >
                 Preview Transfer
               </button>
@@ -404,10 +397,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
                 Back
               </button>
               <button
-                onClick={() => {
-                  transferFunds(transferData);
-                  onClose();
-                }}
+                onClick={handleTransferSubmit}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
               >
                 Confirm Transfer
@@ -423,9 +413,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   {fund.name}
                   <span className="text-sm text-gray-500 ml-2">
-                    (Current: {formatCurrency(investments.balances
-                      .filter(b => b.fundId === fund.id)
-                      .reduce((sum, b) => sum + b.balance, 0))})
+                    (Current: {formatCurrency(getFundTotal(investments.balances, fund.id))})
                   </span>
                 </label>
                 <div className="mt-1 flex items-center">
@@ -436,6 +424,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
                     onChange={(e) => updateAllocation(fund.id, e.target.value)}
                     min="0"
                     max="100"
+                    step="0.1"
                     placeholder="0"
                   />
                   <span className="ml-2">%</span>
@@ -443,8 +432,8 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
               </div>
             ))}
             <div className="text-sm text-gray-500">
-              Total Allocation: {totalAllocation}%
-              {totalAllocation !== 100 && (
+              Total Allocation: {totalAllocation.toFixed(1)}%
+              {Math.abs(totalAllocation - 100) > 0.1 && (
                 <span className="text-red-500 ml-2">
                   (Must equal 100%)
                 </span>
@@ -460,7 +449,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
               </button>
               <button
                 type="submit"
-                disabled={totalAllocation !== 100}
+                disabled={Math.abs(totalAllocation - 100) > 0.1}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md disabled:bg-gray-300"
               >
                 Preview Reallocation
@@ -485,10 +474,7 @@ const MoveMoneyModal = ({ isOpen, onClose }) => {
                 Back
               </button>
               <button
-                onClick={() => {
-                  reallocateFunds(allocations);
-                  onClose();
-                }}
+                onClick={handleReallocationSubmit}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
               >
                 Confirm Reallocation

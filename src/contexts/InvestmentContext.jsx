@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import investmentData from '../data/investments.json';
+import { 
+  calculateTransferPreview, 
+  calculateReallocationPreview, 
+  validateTransfer,
+  validateReallocation
+} from '../utils/investmentUtils';
 
 const InvestmentContext = createContext();
 const STORAGE_KEY = 'investment_data';
@@ -20,6 +26,9 @@ function InvestmentProvider({ children }) {
     return savedData ? JSON.parse(savedData) : investmentData;
   });
 
+  // Error state for handling validation errors
+  const [error, setError] = useState(null);
+
   // Persist to localStorage whenever investments change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(investments));
@@ -30,94 +39,138 @@ function InvestmentProvider({ children }) {
     return null;
   }
 
-  const transferFunds = ({ fromFund, fromType, toFund, amount }) => {
-    setInvestments(prev => {
-      const updatedBalances = [...prev.balances];
-      
-      // Get source balance for specific fund and contribution type
-      const sourceBalance = updatedBalances.find(
-        b => b.fundId === parseInt(fromFund) && 
-        b.contributionTypeId === parseInt(fromType)
-      );
+  /**
+   * Transfer funds between investment options
+   * @param {Object} params - Transfer parameters
+   * @returns {boolean} Success status
+   */
+  const transferFunds = (params) => {
+    // Clear any existing errors
+    setError(null);
 
-      if (!sourceBalance) return prev;
+    // Validate the transfer
+    const validation = validateTransfer(params, investments.balances);
+    if (!validation.valid) {
+      setError(validation.error);
+      return false;
+    }
 
-      const targetNav = updatedBalances.find(
-        b => b.fundId === parseInt(toFund) && 
-        b.contributionTypeId === parseInt(fromType)
-      )?.nav || sourceBalance.nav;
+    // Calculate the new balances
+    const updatedBalances = calculateTransferPreview(params, investments.balances);
 
-      // Calculate units to transfer
-      const unitsToTransfer = amount / sourceBalance.nav;
-
-      // Update source fund
-      sourceBalance.units -= unitsToTransfer;
-      sourceBalance.balance = sourceBalance.units * sourceBalance.nav;
-
-      // Find or create target balance entry for the same contribution type
-      let targetBalance = updatedBalances.find(
-        b => b.fundId === parseInt(toFund) && 
-        b.contributionTypeId === parseInt(fromType)
-      );
-
-      if (!targetBalance) {
-        targetBalance = {
-          fundId: parseInt(toFund),
-          contributionTypeId: parseInt(fromType),
-          units: 0,
-          nav: targetNav,
-          balance: 0
-        };
-        updatedBalances.push(targetBalance);
-      }
-
-      // Update target fund
-      targetBalance.units += amount / targetBalance.nav;
-      targetBalance.balance = targetBalance.units * targetBalance.nav;
-
-      return { ...prev, balances: updatedBalances };
-    });
+    // Update state with the new balances
+    setInvestments(prev => ({ ...prev, balances: updatedBalances }));
+    return true;
   };
 
+  /**
+   * Reallocate funds across investment options
+   * @param {Object} allocations - Fund allocations as percentages
+   * @returns {boolean} Success status
+   */
   const reallocateFunds = (allocations) => {
-    setInvestments(prev => {
-      const totalBalance = prev.balances.reduce((sum, b) => sum + b.balance, 0);
-      const updatedBalances = [...prev.balances];
+    // Clear any existing errors
+    setError(null);
 
-      // Calculate new balances based on allocation percentages while preserving contribution types
-      prev.funds.forEach(fund => {
-        const percentage = allocations[fund.id];
-        const targetAmount = (totalBalance * percentage) / 100;
-        
-        // Get all contribution types for this fund
-        const fundBalances = updatedBalances.filter(b => b.fundId === fund.id);
-        const fundTotal = fundBalances.reduce((sum, b) => sum + b.balance, 0);
-        
-        // Adjust each contribution type proportionally
-        fundBalances.forEach(balance => {
-          const proportion = fundTotal > 0 ? balance.balance / fundTotal : 1 / fundBalances.length;
-          const newBalance = targetAmount * proportion;
-          balance.units = newBalance / balance.nav;
-          balance.balance = balance.units * balance.nav;
-        });
-      });
+    // Convert string percentages to numbers
+    const numericAllocations = Object.entries(allocations).reduce((acc, [key, value]) => ({
+      ...acc,
+      [key]: value === '' ? 0 : Number(value)
+    }), {});
 
-      // Persist to localStorage (handled by useEffect)
-      return { ...prev, balances: updatedBalances };
-    });
+    // Validate the reallocation
+    const validation = validateReallocation(numericAllocations);
+    if (!validation.valid) {
+      setError(validation.error);
+      return false;
+    }
+
+    // Calculate the new balances
+    const updatedBalances = calculateReallocationPreview(
+      numericAllocations, 
+      investments.balances, 
+      investments.funds
+    );
+
+    // Update state with the new balances
+    setInvestments(prev => ({ ...prev, balances: updatedBalances }));
+    return true;
+  };
+
+  /**
+   * Preview fund transfer without committing changes
+   * @param {Object} params - Transfer parameters
+   * @returns {Object} Preview result with projected balances and validation
+   */
+  const previewTransfer = (params) => {
+    const validation = validateTransfer(params, investments.balances);
+    
+    if (!validation.valid) {
+      return { 
+        valid: false, 
+        error: validation.error,
+        projectedBalances: null
+      };
+    }
+
+    const projectedBalances = calculateTransferPreview(params, investments.balances);
+    return { 
+      valid: true, 
+      error: null,
+      projectedBalances 
+    };
+  };
+
+  /**
+   * Preview fund reallocation without committing changes
+   * @param {Object} allocations - Fund allocations as percentages
+   * @returns {Object} Preview result with projected balances and validation
+   */
+  const previewReallocation = (allocations) => {
+    // Convert string percentages to numbers
+    const numericAllocations = Object.entries(allocations).reduce((acc, [key, value]) => ({
+      ...acc,
+      [key]: value === '' ? 0 : Number(value)
+    }), {});
+
+    const validation = validateReallocation(numericAllocations);
+    
+    if (!validation.valid) {
+      return { 
+        valid: false, 
+        error: validation.error,
+        projectedBalances: null
+      };
+    }
+
+    const projectedBalances = calculateReallocationPreview(
+      numericAllocations, 
+      investments.balances, 
+      investments.funds
+    );
+    
+    return { 
+      valid: true, 
+      error: null,
+      projectedBalances 
+    };
   };
 
   // Reset data to initial state
   const resetToInitial = () => {
     setInvestments(investmentData);
+    setError(null);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(investmentData));
   };
 
   const value = {
     investments,
+    error,
     transferFunds,
     reallocateFunds,
-    resetToInitial // Expose reset function
+    previewTransfer,
+    previewReallocation,
+    resetToInitial
   };
 
   return (
