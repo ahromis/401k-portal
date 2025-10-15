@@ -58,6 +58,34 @@ I've created a comprehensive 2-hour interactive workshop for your team focused o
    - Security hardening checklist
    - Code quality improvements
    - Maintains green tests
+     
+9. **plan.chatmode.md** - Architecture planning
+   - Design discussions and alternatives
+   - Generate Mermaid diagrams
+   - Evaluate multiple approaches
+  
+### Pre-built Prompts (in `.github/prompts/`)
+
+Workshop demonstrations and exercises with ready-to-use prompts:
+
+**Part 2 - TDD Fundamentals Demo:**
+- `part2-demo-red-balance-validation.prompt.md` - RED phase demo
+- `part2-demo-green-balance-validation.prompt.md` - GREEN phase demo
+- `part2-demo-refactor-balance-validation.prompt.md` - REFACTOR phase demo
+
+**Part 3 - Hands-On Exercise:**
+- `part3-exercise-red-transfer-balance.prompt.md` - Pair exercise starter
+
+**Part 4 - Architecture & Agent Mode:**
+- `part4-demo-architecture-contribution-calculator.prompt.md` - Design discussion
+- `part4-demo-architecture-alternatives.prompt.md` - Compare approaches
+- `part4-demo-architecture-mermaid-diagram.prompt.md` - Visual diagrams
+- `part4-demo-agent-refactor-balance-matrix.prompt.md` - Autonomous refactoring
+
+**Part 5 - User Stories:**
+- `part5-story-contribution-limit.prompt.md` - Easy story
+- `part5-story-fund-rebalancing.prompt.md` - Medium story
+- `part5-story-performance-dashboard.prompt.md` - Medium story
 
 ### Testing Infrastructure
 
@@ -407,6 +435,9 @@ Every exercise uses real features from your actual codebase. No toy examples.
 
 ### ✅ Custom Chat Modes
 Participants use purpose-built AI assistants that keep them focused on each TDD phase.
+
+## ✅ Pre-built Prompts
+Facilitators use tested, consistent prompts from `.github/prompts/` for reliable demos.
 
 ### ✅ Safe Environment
 Pre-configured setup means no time wasted on "getting it to work."
