@@ -42,7 +42,7 @@ I've created a comprehensive 2-hour interactive workshop for your team focused o
    - Common mistakes to avoid
    - Printable for participants
 
-### Custom Chat Modes (in `.github/copilot/`)
+### Custom Chat Modes (in `.github/chatmodes/`)
 
 6. **tdd-red.chatmode.md** - Write failing tests first
    - Guides test-first mindset
