@@ -137,13 +137,13 @@ describe('calculateTotalBalance', () => {
 #### 🟢 GREEN: Minimal Implementation
 
 1. Switch to TDD-Green mode: `@tdd-green`
-2. Show the failing test:
+2. Reference the failing test:
 
 ```
 @tdd-green
 
-Here's my failing test:
-[paste test above]
+I have a failing test in src/utils/__tests__/accountBalance.test.js
+for the calculateTotalBalance function.
 
 Help me write the minimal code to make it pass. 
 Create src/utils/accountBalance.js
@@ -267,8 +267,8 @@ Acceptance Criteria:
    ```
    @tdd-green
    
-   Here's my failing test:
-   [paste test]
+   I have a failing test in src/utils/__tests__/transferValidation.test.js
+   for validating fund transfers.
    
    Create minimal implementation in src/utils/transferValidation.js
    ```
@@ -281,8 +281,7 @@ Acceptance Criteria:
    ```
    @tdd-refactor
    
-   Improve this code:
-   [paste code]
+   I have working code in src/utils/transferValidation.js with passing tests.
    
    Focus on: error messages, input validation
    ```
