@@ -1,3 +1,4 @@
+```prompt
 ---
 mode: 'agent'
 description: 'Implement contribution limit tracker feature based on architectural plan'
@@ -5,7 +6,11 @@ description: 'Implement contribution limit tracker feature based on architectura
 
 # Implementation: Contribution Limit Tracker
 
-Implement the Contribution Limit Tracker feature based on the plan we created.
+Implement the Contribution Limit Tracker feature based on our architecture discussion.
+
+Architecture Reference:
+- Review our conversation above for the architecture plan
+- Check the Mermaid diagram file we created: docs/architecture/contribution-limit-tracker-diagram.md
 
 User Story:
 As a 401k account holder
@@ -14,13 +19,11 @@ So I stay within IRS limits
 
 Acceptance Criteria:
 - Show year-to-date contributions
-- Display IRS limit for 2025 ($23,000)
+- Display IRS limit for 2025 ($23,500)
 - Calculate remaining room
 - Show catch-up contribution if age 50+ ($7,500)
+- Show enhanced catch-up contribution if age 60-63 ($11,250)
 - Alert when over 90% of limit
-
-Implementation Plan from Plan mode:
-[Reference the key points from Plan mode's architectural discussion]
 
 File Structure:
 - Utilities: src/utils/contribution-limit.js
@@ -36,3 +39,5 @@ Requirements:
 6. Run tests to verify everything works
 
 Create the files, implement the functionality, and verify with tests.
+
+```

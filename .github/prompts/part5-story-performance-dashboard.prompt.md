@@ -1,3 +1,4 @@
+```prompt
 ---
 mode: 'agent'
 description: 'Implement performance dashboard feature based on architectural plan'
@@ -5,7 +6,11 @@ description: 'Implement performance dashboard feature based on architectural pla
 
 # Implementation: Performance Dashboard
 
-Implement the Performance Dashboard feature based on the plan we created.
+Implement the Performance Dashboard feature based on our architecture discussion.
+
+Architecture Reference:
+- Review our conversation above for the architecture plan
+- Check the Mermaid diagram file we created: docs/architecture/performance-dashboard-diagram.md
 
 User Story:
 As a 401k account holder
@@ -17,9 +22,6 @@ Acceptance Criteria:
 - Compare to S&P 500 benchmark
 - Display best/worst performing fund
 - Show contribution vs growth breakdown
-
-Implementation Plan from Plan mode:
-[Reference the key points from Plan mode's architectural discussion]
 
 File Structure:
 - Utilities: src/utils/performance-dashboard.js
@@ -35,3 +37,5 @@ Requirements:
 6. Run tests to verify everything works
 
 Create the files, implement the functionality, and verify with tests.
+
+```

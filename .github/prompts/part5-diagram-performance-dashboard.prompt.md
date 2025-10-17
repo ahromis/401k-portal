@@ -11,3 +11,5 @@ Create a Mermaid diagram showing:
 - Data flow from funds to metrics
 
 Keep it clear and organized.
+
+Save this as a file: docs/architecture/performance-dashboard-diagram.md

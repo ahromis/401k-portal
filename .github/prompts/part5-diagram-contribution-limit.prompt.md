@@ -1,3 +1,4 @@
+```prompt
 ---
 mode: 'agent'
 description: 'Generate Mermaid diagram for contribution limit tracker architecture'
@@ -11,3 +12,7 @@ Create a Mermaid diagram showing:
 - Alert logic
 
 Keep it simple and clear.
+
+Save this as a file: docs/architecture/contribution-limit-tracker-diagram.md
+
+```

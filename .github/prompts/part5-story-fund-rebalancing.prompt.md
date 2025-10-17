@@ -1,3 +1,4 @@
+```prompt
 ---
 mode: 'agent'
 description: 'Implement fund rebalancing feature based on architectural plan'
@@ -5,7 +6,11 @@ description: 'Implement fund rebalancing feature based on architectural plan'
 
 # Implementation: Fund Rebalancing
 
-Implement the Fund Rebalancing feature based on the plan we created.
+Implement the Fund Rebalancing feature based on our architecture discussion.
+
+Architecture Reference:
+- Review our conversation above for the architecture plan
+- Check the Mermaid diagram file we created: docs/architecture/fund-rebalancing-diagram.md
 
 User Story:
 As a 401k account holder  
@@ -18,9 +23,6 @@ Acceptance Criteria:
 - Calculate required transfers
 - Show preview of changes
 - Minimum transfer is $1
-
-Implementation Plan from Plan mode:
-[Reference the key points from Plan mode's architectural discussion]
 
 File Structure:
 - Utilities: src/utils/fund-rebalancing.js
@@ -36,3 +38,5 @@ Requirements:
 6. Run tests to verify everything works
 
 Create the files, implement the functionality, and verify with tests.
+
+```

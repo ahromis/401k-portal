@@ -469,9 +469,10 @@ So I stay within IRS limits
 
 Acceptance Criteria:
 - Show year-to-date contributions
-- Display IRS limit for 2025 ($23,000)
+- Display IRS limit for 2025 ($23,500)
 - Calculate remaining room
 - Show catch-up contribution if age 50+ ($7,500)
+- Show enhanced catch-up contribution if age 60-63 ($11,250)
 - Alert when over 90% of limit
 ```
 
@@ -481,9 +482,10 @@ I'm building a Contribution Limit Tracker for a 401k portal.
 
 Requirements:
 - Show year-to-date contributions
-- Display IRS limit for 2025 ($23,000)
+- Display IRS limit for 2025 ($23,500)
 - Calculate remaining room
 - Show catch-up contribution if age 50+ ($7,500)
+- Show enhanced catch-up contribution if age 60-63 ($11,250)
 - Alert when over 90% of limit
 
 Let's discuss the architecture:

@@ -1,3 +1,4 @@
+```prompt
 ---
 mode: 'ask'
 description: 'Plan the architecture for contribution limit tracker feature'
@@ -21,3 +22,5 @@ Let's discuss the architecture:
 4. How should we structure the data?
 
 Don't write code yet - help me plan the approach.
+
+```

@@ -11,3 +11,5 @@ Create a Mermaid flowchart showing:
 - Transfer generation logic
 
 Keep it focused on the core algorithm.
+
+Save this as a file: docs/architecture/fund-rebalancing-diagram.md
