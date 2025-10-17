@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+mode: 'ask'
 description: 'Discuss the architecture design for a contribution calculator feature including components, data flow, and validation requirements'
 ---
 

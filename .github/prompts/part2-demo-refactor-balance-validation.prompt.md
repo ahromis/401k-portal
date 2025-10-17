@@ -1,11 +1,13 @@
 ---
-mode: 'agent'
+mode: 'tdd-refactor'
 description: 'Refactor balance validation code to improve quality, add validation, and enhance error handling while keeping tests green'
 ---
 
 # TDD Refactor: Balance Validation
 
-Here's my working code with passing tests:
+Here's my working code with passing tests in:
+- Implementation: src/utils/accountBalance.js
+- Tests: src/utils/__tests__/accountBalance.test.js
 
 ```javascript
 // src/utils/accountBalance.js

@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+mode: 'ask'
 description: 'Evaluate architectural alternatives and trade-offs for implementation decisions'
 ---
 

@@ -1,11 +1,14 @@
 ---
-mode: 'agent'
+mode: 'tdd-green'
 description: 'Write minimal implementation to pass the failing balance validation test following TDD green phase'
 ---
 
 # TDD Green: Balance Validation
 
-Here's my failing test:
+I have a failing test in src/utils/__tests__/accountBalance.test.js
+for the calculateTotalBalance function.
+
+Here's the failing test:
 
 ```javascript
 import { describe, it, expect } from 'vitest';
@@ -24,5 +27,5 @@ describe('calculateTotalBalance', () => {
 });
 ```
 
-Help me write the minimal code to make it pass. 
-Create src/utils/accountBalance.js
+Help me write the minimal code to make it pass.
+Create the implementation at: src/utils/accountBalance.js

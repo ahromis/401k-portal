@@ -45,12 +45,33 @@ npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-
 
 ### Custom Chat Modes
 
-The repository already includes three custom chat modes in `.github/copilot/`:
+The repository already includes four custom chat modes in `.github/chatmodes/`:
+- `plan.chatmode.md` - Strategic planning and architecture
 - `tdd-red.chatmode.md` - Write failing tests
 - `tdd-green.chatmode.md` - Minimal implementation
 - `tdd-refactor.chatmode.md` - Quality improvements
 
 After cloning, restart VS Code to load these modes.
+
+**How to use custom chat modes:**
+1. Open Copilot Chat (Cmd+I or Ctrl+I)
+2. Click the chat mode dropdown at the top of the Chat view
+3. Select the desired mode from the list (e.g., "plan", "tdd-red")
+4. The mode will stay active until you switch to a different mode
+
+### Prompt Files
+
+The repository also includes reusable prompt files in `.github/prompts/`:
+- Ready-to-use prompts for each workshop section
+- Automatically set the appropriate chat mode (ask, agent, etc.)
+- Can be referenced instead of copying/pasting prompts
+
+**How to use prompt files:**
+1. Open Copilot Chat (Cmd+I or Ctrl+I)
+2. Type `/` followed by the prompt file name (e.g., `/part2-demo-red-balance-validation`)
+3. The prompt will run with its configured mode automatically
+
+See `.github/prompts/README.md` for a complete list of available prompts.
 
 ---
 
@@ -64,25 +85,27 @@ After cloning, restart VS Code to load these modes.
 1. ✅ Write tests first with Copilot's TDD modes
 2. ✅ Let Copilot implement minimal code to pass tests
 3. ✅ Refactor to production quality
-4. ✅ Use Copilot for architecture discussions
-5. ✅ Leverage Agent Mode for complex tasks
+4. ✅ Use Plan mode for strategic architecture planning
+5. ✅ Leverage Agent Mode to implement features autonomously
 
 ### The TDD Workflow (5 min)
 
 ```
-🔴 RED Phase (@tdd-red)
+🔴 RED Phase (tdd-red mode)
    Write ONE failing test that describes behavior
    ↓
-🟢 GREEN Phase (@tdd-green)  
+🟢 GREEN Phase (tdd-green mode)  
    Write minimal code to make it pass
    ↓
-🔵 REFACTOR Phase (@tdd-refactor)
+🔵 REFACTOR Phase (tdd-refactor mode)
    Improve code quality, keep tests green
    ↓
    Repeat for next behavior
 ```
 
 **Key Rule:** Never skip a phase. Trust the process.
+
+**How to switch modes:** Use the chat mode dropdown at the top of Chat view to select tdd-red, tdd-green, or tdd-refactor.
 
 ---
 
@@ -95,12 +118,10 @@ After cloning, restart VS Code to load these modes.
 #### 🔴 RED: Write Failing Test
 
 1. Open Copilot Chat (Cmd+I or Ctrl+I)
-2. Activate TDD-Red mode: `@tdd-red`
+2. Click the chat mode dropdown and select **"tdd-red"**
 3. Provide requirements:
 
 ```
-@tdd-red
-
 I need to validate that the total account balance equals the sum of all fund balances.
 
 Requirements:
@@ -110,6 +131,7 @@ Requirements:
 - Handle empty arrays (return 0)
 
 Help me write ONE failing test for the basic happy path case.
+Create the test file at: src/utils/__tests__/accountBalance.test.js
 ```
 
 4. Review Copilot's suggested test
@@ -136,12 +158,10 @@ describe('calculateTotalBalance', () => {
 
 #### 🟢 GREEN: Minimal Implementation
 
-1. Switch to TDD-Green mode: `@tdd-green`
+1. Switch to TDD-Green mode: Click the chat mode dropdown and select **"tdd-green"**
 2. Reference the failing test:
 
 ```
-@tdd-green
-
 I have a failing test in src/utils/__tests__/accountBalance.test.js
 for the calculateTotalBalance function.
 
@@ -162,14 +182,13 @@ export function calculateTotalBalance(funds) {
 
 #### 🔵 REFACTOR: Improve Quality
 
-1. Switch to TDD-Refactor mode: `@tdd-refactor`
+1. Switch to TDD-Refactor mode: Click the chat mode dropdown and select **"tdd-refactor"**
 2. Request improvements:
 
 ```
-@tdd-refactor
-
-Here's my working code with passing tests:
-[paste implementation and test]
+Here's my working code with passing tests in:
+- Implementation: src/utils/accountBalance.js
+- Tests: src/utils/__tests__/accountBalance.test.js
 
 Refactor to improve:
 - Input validation
@@ -249,9 +268,10 @@ Acceptance Criteria:
 **Driver does:**
 
 1. **🔴 RED Phase (4 min)**
-   ```
-   @tdd-red
+   - Switch to **tdd-red** mode using the chat mode dropdown
+   - Use this prompt:
    
+   ```
    I need to validate fund transfers.
    First requirement: Cannot transfer more than available balance.
    
@@ -264,9 +284,10 @@ Acceptance Criteria:
 4. **Switch roles**
 
 5. **🟢 GREEN Phase (4 min)**
-   ```
-   @tdd-green
+   - Switch to **tdd-green** mode using the chat mode dropdown
+   - Use this prompt:
    
+   ```
    I have a failing test in src/utils/__tests__/transferValidation.test.js
    for validating fund transfers.
    
@@ -278,9 +299,10 @@ Acceptance Criteria:
 8. **Switch roles**
 
 9. **🔵 REFACTOR Phase (4 min)**
-   ```
-   @tdd-refactor
+   - Switch to **tdd-refactor** mode using the chat mode dropdown
+   - Use this prompt:
    
+   ```
    I have working code in src/utils/transferValidation.js with passing tests.
    
    Focus on: error messages, input validation
@@ -380,12 +402,12 @@ What are the pros and cons of:
 
 **Facilitator demonstrates:**
 
-1. Enable Agent Mode (toggle in Copilot Chat)
-
+1. Enable Agent Mode:
+   - Click the chat mode dropdown in the Chat view
+   - Select **"Agent"** from the list
+   
 2. Give a complex task:
 ```
-@agent 
-
 Refactor the BalanceMatrix component:
 1. Extract calculation logic into a separate utility
 2. Add PropTypes or type comments
@@ -437,6 +459,36 @@ Acceptance Criteria:
 - Alert when over 90% of limit
 ```
 
+**Architecture Prompt:**
+```
+I'm building a Contribution Limit Tracker for a 401k portal.
+
+Requirements:
+- Show year-to-date contributions
+- Display IRS limit for 2025 ($23,000)
+- Calculate remaining room
+- Show catch-up contribution if age 50+ ($7,500)
+- Alert when over 90% of limit
+
+Let's discuss the architecture:
+1. What functions do we need?
+2. What calculations are required?
+3. What should we test first?
+4. How should we structure the data?
+
+Don't write code yet - help me plan the approach.
+```
+
+**Diagram Prompt:**
+```
+Create a Mermaid diagram showing:
+- Function structure for contribution limit tracking
+- Data flow from inputs to calculations
+- Alert logic
+
+Keep it simple and clear.
+```
+
 #### Option B: Fund Rebalancing (Medium)
 
 ```
@@ -450,6 +502,36 @@ Acceptance Criteria:
 - Calculate required transfers
 - Show preview of changes
 - Minimum transfer is $1
+```
+
+**Architecture Prompt:**
+```
+I'm building a Fund Rebalancing feature for a 401k portal.
+
+Requirements:
+- Input target % for each fund
+- Validate percentages sum to 100%
+- Calculate required transfers
+- Show preview of changes
+- Minimum transfer is $1
+
+Let's discuss the architecture:
+1. What validation functions do we need?
+2. How do we calculate the transfer amounts?
+3. What's the order of operations?
+4. What edge cases should we handle?
+
+Don't write code yet - help me plan the approach.
+```
+
+**Diagram Prompt:**
+```
+Create a Mermaid flowchart showing:
+- Input validation flow
+- Rebalancing calculation steps
+- Transfer generation logic
+
+Keep it focused on the core algorithm.
 ```
 
 #### Option C: Performance Dashboard (Advanced)
@@ -466,29 +548,137 @@ Acceptance Criteria:
 - Show contribution vs growth breakdown
 ```
 
+**Architecture Prompt:**
+```
+I'm building a Performance Dashboard for a 401k portal.
+
+Requirements:
+- Show 1-year return percentage
+- Compare to S&P 500 benchmark
+- Display best/worst performing fund
+- Show contribution vs growth breakdown
+
+Let's discuss the architecture:
+1. What performance calculations do we need?
+2. How do we compare to benchmark?
+3. What components/functions should we create?
+4. What data structure makes sense?
+
+Don't write code yet - help me plan the approach.
+```
+
+**Diagram Prompt:**
+```
+Create a Mermaid diagram showing:
+- Performance calculation pipeline
+- Component structure
+- Data flow from funds to metrics
+
+Keep it clear and organized.
+```
+
 ### 15-Minute Sprint Process
 
-**Minutes 0-3:** Architecture Planning
-- Use Copilot to discuss design
-- Generate component structure
-- Identify key functions
+**Minutes 0-4:** Strategic Planning with Plan Mode
 
-**Minutes 3-12:** TDD Implementation
-- Use @tdd-red, @tdd-green, @tdd-refactor
-- Implement at least 2 test cases
-- Keep tests green
+1. **Activate Plan Mode**: 
+   - Open Copilot Chat (Cmd+I or Ctrl+I)
+   - Click the chat mode dropdown at the top of the Chat view
+   - Select **"plan"** from the list of chat modes
 
-**Minutes 12-15:** Demo Prep
-- Make sure tests pass
-- Add basic UI (if time)
-- Prepare to share
+2. **Use the Planning Prompt** (provided with your chosen option above):
+   ```
+   [paste the Architecture Prompt from your chosen option]
+   ```
+
+3. **Have the Architecture Discussion**:
+   - Let Plan mode analyze the requirements
+   - Ask follow-up questions about implementation approach
+   - Discuss file structure and organization
+   - Review suggested testing strategy
+
+4. **Request the Mermaid Diagram**:
+   ```
+   [paste the Diagram Prompt from your chosen option]
+   ```
+   
+5. **Get the Implementation Summary**:
+   ```
+   Based on our discussion and diagram, create a step-by-step implementation plan:
+   1. List all files to create with their paths
+   2. Order of implementation
+   3. Key functions/components needed
+   4. Testing approach
+   
+   Format this as a clear action plan for Agent Mode.
+   ```
+
+**Minutes 4-13:** Switch to Agent Mode for Implementation
+
+1. **Switch to Agent Mode**: 
+   - Click the chat mode dropdown in the Chat view
+   - Select **"Agent"** from the list
+   - You'll see the mode switch to Agent at the top of Chat
+
+2. **Provide the Implementation Task** - Reference your plan:
+
+```
+Implement the [feature name] feature based on the plan we created.
+
+User Story:
+[paste acceptance criteria from your chosen option]
+
+Implementation Plan from Plan mode:
+[paste or reference the key points from Plan mode's summary]
+
+File Structure:
+- Utilities: src/utils/[feature-name].js
+- Tests: src/utils/__tests__/[feature-name].test.js
+- Component (if time): src/components/[FeatureName].jsx
+
+Requirements:
+1. Follow the architecture from our Mermaid diagram
+2. Include comprehensive input validation
+3. Add error handling with clear messages
+4. Write tests for all core functions
+5. Add JSDoc documentation
+6. Run tests to verify everything works
+
+Create the files, implement the functionality, and verify with tests.
+```
+
+3. **Watch Agent Work**:
+   - Agent will create files following your plan
+   - Implement functions based on architecture discussion
+   - Write and run tests
+   - Report progress and results
+
+4. **Guide Agent if Needed**:
+   ```
+   Make sure the calculations match our architecture diagram
+   ```
+   
+   or
+   
+   ```
+   Add more validation for edge cases we discussed
+   ```
+
+**Minutes 13-15:** Demo Prep
+- Review the implementation Agent created
+- Verify all tests pass
+- Compare the code to your architecture diagram
+- Note what worked well and what needed guidance
+- Prepare to show: Your Plan mode discussion → Diagram → Agent's implementation
 
 ### Quick Demos (3 min per group)
 
 Each group shows:
-- What you built
-- How Copilot helped
-- One surprising moment
+- Your architecture diagram from Plan mode
+- What Agent Mode built
+- How well it followed your architecture plan
+- Any corrections or guidance you gave Agent
+- One surprising moment or learning
 
 ---
 
@@ -503,40 +693,46 @@ Each group shows:
 - ✅ Refactor only when green
 
 **Architecture:**
-- ✅ Have design conversations before coding
+- ✅ Use Plan mode (custom chat mode) for strategic planning before coding
+- ✅ Switch chat modes using the dropdown in Chat view
+- ✅ Have design conversations before implementation
 - ✅ Use diagrams to visualize structure
 - ✅ Evaluate multiple approaches
 - ✅ Document decisions
 
 **Agent Mode:**
+- ✅ Plan first with Plan mode, then execute with Agent mode
+- ✅ Switch modes using the chat mode dropdown
 - ✅ Great for well-defined multi-step tasks
 - ✅ You maintain control and oversight
 - ✅ Review all changes before committing
-- ✅ Saves time on tedious refactoring
+- ✅ Saves time on complex feature implementation
 
 ### Immediate Next Steps (This Week)
 
 1. **Try one TDD cycle** on your next story
-2. **Use @tdd-red, @tdd-green, @tdd-refactor** for one feature
-3. **Have one architecture discussion** with Copilot
-4. **Share your experience** with the team
+2. **Use custom TDD modes** (tdd-red, tdd-green, tdd-refactor) for one feature
+3. **Use Plan mode** before starting your next feature
+4. **Try Agent mode** for implementing a well-defined task
+5. **Share your experience** with the team
 
 ### Building the Habit (Next Month)
 
 **Week 1-2:**
 - Use TDD chat modes for all new features
 - Practice RED-GREEN-REFACTOR discipline
+- Start each feature with Plan mode
 
 **Week 3-4:**
-- Start architectural planning conversations
-- Try Agent Mode for refactoring
+- Use Plan + Agent mode workflow for complex features
+- Try Agent mode for refactoring
 - Build team prompt library
 
 ### Resources
 
 **In This Repo:**
-- `WORKSHOP.md` - Detailed workshop guide
-- `.github/copilot/*.chatmode.md` - Custom TDD modes
+- `WORKSHOP-2HR.md` - This workshop guide
+- `.github/chatmodes/*.chatmode.md` - Custom chat modes (plan, tdd-red, tdd-green, tdd-refactor)
 - Sample user stories for practice
 
 **Online:**
@@ -612,9 +808,13 @@ Email participants:
 Thanks for participating in today's Copilot workshop!
 
 Quick Recap:
-🔴 @tdd-red - Write failing tests first
-🟢 @tdd-green - Minimal implementation  
-🔵 @tdd-refactor - Improve quality
+🔴 tdd-red mode - Write failing tests first
+🟢 tdd-green mode - Minimal implementation  
+🔵 tdd-refactor mode - Improve quality
+📋 Plan mode - Architecture planning
+🤖 Agent mode - Autonomous implementation
+
+Remember: Switch modes using the chat mode dropdown in Chat view!
 
 Your Challenge:
 Try TDD on your next user story and share your experience in Slack.
@@ -695,7 +895,7 @@ After the workshop, collect and share:
 
 **Developer:** [Name]
 **Story:** [Story number/name]
-**Technique:** TDD with @tdd-red, @tdd-green, @tdd-refactor
+**Technique:** TDD with custom chat modes (tdd-red, tdd-green, tdd-refactor)
 
 **What they built:**
 [Brief description]

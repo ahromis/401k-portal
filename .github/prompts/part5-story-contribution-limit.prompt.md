@@ -1,10 +1,13 @@
 ---
 mode: 'agent'
-description: 'Implement contribution limit tracker feature using TDD approach to track IRS contribution limits and remaining room'
+description: 'Implement contribution limit tracker feature based on architectural plan'
 ---
 
-# User Story: Contribution Limit Tracker
+# Implementation: Contribution Limit Tracker
 
+Implement the Contribution Limit Tracker feature based on the plan we created.
+
+User Story:
 As a 401k account holder
 I want to see my remaining contribution room
 So I stay within IRS limits
@@ -16,5 +19,20 @@ Acceptance Criteria:
 - Show catch-up contribution if age 50+ ($7,500)
 - Alert when over 90% of limit
 
-## Instructions
-Use TDD approach to implement this feature.
+Implementation Plan from Plan mode:
+[Reference the key points from Plan mode's architectural discussion]
+
+File Structure:
+- Utilities: src/utils/contribution-limit.js
+- Tests: src/utils/__tests__/contribution-limit.test.js
+- Component (if time): src/components/ContributionLimitTracker.jsx
+
+Requirements:
+1. Follow the architecture from our Mermaid diagram
+2. Include comprehensive input validation
+3. Add error handling with clear messages
+4. Write tests for all core functions
+5. Add JSDoc documentation
+6. Run tests to verify everything works
+
+Create the files, implement the functionality, and verify with tests.
