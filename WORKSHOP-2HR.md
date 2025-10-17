@@ -51,6 +51,8 @@ The repository already includes four custom chat modes in `.github/chatmodes/`:
 - `tdd-green.chatmode.md` - Minimal implementation
 - `tdd-refactor.chatmode.md` - Quality improvements
 
+These custom chat modes are based on examples from the [Awesome Copilot repository](https://github.com/github/awesome-copilot), a community-driven collection of Copilot prompts, chat modes, and instructions. Visit this repository to find more examples and contribute your own!
+
 After cloning, restart VS Code to load these modes.
 
 **How to use custom chat modes:**
@@ -733,11 +735,12 @@ Each group shows:
 **In This Repo:**
 - `WORKSHOP-2HR.md` - This workshop guide
 - `.github/chatmodes/*.chatmode.md` - Custom chat modes (plan, tdd-red, tdd-green, tdd-refactor)
+- `.github/prompts/*.prompt.md` - Reusable prompt files for workshop exercises
 - Sample user stories for practice
 
 **Online:**
 - [GitHub Copilot Documentation](https://docs.github.com/copilot)
-- [Awesome Copilot Chat Modes](https://github.com/github/awesome-copilot)
+- [Awesome Copilot](https://github.com/github/awesome-copilot) - Community collection of prompts, chat modes, and instructions
 - [Testing Library Documentation](https://testing-library.com/react)
 
 ### Team Support
