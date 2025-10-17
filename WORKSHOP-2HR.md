@@ -57,10 +57,9 @@ These custom chat modes are based on examples from the [Awesome Copilot reposito
 After cloning, restart VS Code to load these modes.
 
 **How to use custom chat modes:**
-1. Open Copilot Chat (Cmd+I or Ctrl+I)
-2. Click the chat mode dropdown at the top of the Chat view
-3. Select the desired mode from the list (e.g., "plan", "tdd-red")
-4. The mode will stay active until you switch to a different mode
+1. Open the Chat view (Ctrl+Alt+I on Windows/Linux, Cmd+Opt+I on macOS)
+2. Select the desired mode from the chat mode dropdown list at the top of the Chat view
+3. The mode will stay active until you switch to a different mode
 
 ### Prompt Files
 
@@ -70,7 +69,7 @@ The repository also includes reusable prompt files in `.github/prompts/`:
 - Can be referenced instead of copying/pasting prompts
 
 **How to use prompt files:**
-1. Open Copilot Chat (Cmd+I or Ctrl+I)
+1. Open the Chat view (Ctrl+Alt+I on Windows/Linux, Cmd+Opt+I on macOS)
 2. Type `/` followed by the prompt file name (e.g., `/part2-demo-red-balance-validation`)
 3. The prompt will run with its configured mode automatically
 
@@ -90,7 +89,7 @@ Custom instructions define coding guidelines and rules that automatically apply 
 - Reduce the need to repeat context in every chat prompt
 
 **How to generate custom instructions:**
-1. Open Copilot Chat (Cmd+I or Ctrl+I)
+1. Open the Chat view (Ctrl+Alt+I on Windows/Linux, Cmd+Opt+I on macOS)
 2. Select **Configure Chat** > **Generate Instructions**
 3. VS Code will analyze your workspace and create a `.github/copilot-instructions.md` file
 4. Review and edit the generated instructions to match your preferences
@@ -130,7 +129,7 @@ Custom instructions define coding guidelines and rules that automatically apply 
 
 **Key Rule:** Never skip a phase. Trust the process.
 
-**How to switch modes:** Use the chat mode dropdown at the top of Chat view to select tdd-red, tdd-green, or tdd-refactor.
+**How to switch modes:** In the Chat view, select the desired mode from the chat mode dropdown list at the top of the view.
 
 ---
 
@@ -142,8 +141,8 @@ Custom instructions define coding guidelines and rules that automatically apply 
 
 #### 🔴 RED: Write Failing Test
 
-1. Open Copilot Chat (Cmd+I or Ctrl+I)
-2. Click the chat mode dropdown and select **"tdd-red"**
+1. Open the Chat view (Ctrl+Alt+I on Windows/Linux, Cmd+Opt+I on macOS)
+2. Select **"tdd-red"** from the chat mode dropdown list
 3. Provide requirements:
 
 ```
@@ -183,7 +182,7 @@ describe('calculateTotalBalance', () => {
 
 #### 🟢 GREEN: Minimal Implementation
 
-1. Switch to TDD-Green mode: Click the chat mode dropdown and select **"tdd-green"**
+1. Switch to TDD-Green mode: Select **"tdd-green"** from the chat mode dropdown list
 2. Reference the failing test:
 
 ```
@@ -207,7 +206,7 @@ export function calculateTotalBalance(funds) {
 
 #### 🔵 REFACTOR: Improve Quality
 
-1. Switch to TDD-Refactor mode: Click the chat mode dropdown and select **"tdd-refactor"**
+1. Switch to TDD-Refactor mode: Select **"tdd-refactor"** from the chat mode dropdown list
 2. Request improvements:
 
 ```
@@ -293,7 +292,7 @@ Acceptance Criteria:
 **Driver does:**
 
 1. **🔴 RED Phase (3 min)**
-   - Switch to **tdd-red** mode using the chat mode dropdown
+   - Switch to **tdd-red** mode from the chat mode dropdown list
    - Use this prompt:
    
    ```
@@ -309,7 +308,7 @@ Acceptance Criteria:
 4. **Switch roles**
 
 5. **🟢 GREEN Phase (3 min)**
-   - Switch to **tdd-green** mode using the chat mode dropdown
+   - Switch to **tdd-green** mode from the chat mode dropdown list
    - Use this prompt:
    
    ```
@@ -324,7 +323,7 @@ Acceptance Criteria:
 8. **Switch roles**
 
 9. **🔵 REFACTOR Phase (4 min)**
-   - Switch to **tdd-refactor** mode using the chat mode dropdown
+   - Switch to **tdd-refactor** mode from the chat mode dropdown list
    - Use this prompt:
    
    ```
@@ -421,8 +420,7 @@ What are the pros and cons of:
 **Facilitator demonstrates:**
 
 1. Enable Agent Mode:
-   - Click the chat mode dropdown in the Chat view
-   - Select **"Agent"** from the list
+   - Select **"Agent"** from the chat mode dropdown list in the Chat view
    
 2. Give a complex task:
 ```
@@ -600,9 +598,8 @@ Keep it clear and organized.
 **Minutes 0-8:** Strategic Planning with Plan Mode
 
 1. **Activate Plan Mode**: 
-   - Open Copilot Chat (Cmd+I or Ctrl+I)
-   - Click the chat mode dropdown at the top of the Chat view
-   - Select **"plan"** from the list of chat modes
+   - Open the Chat view (Ctrl+Alt+I on Windows/Linux, Cmd+Opt+I on macOS)
+   - Select **"plan"** from the chat mode dropdown list
 
 2. **Use the Planning Prompt** (provided with your chosen option above):
    ```
@@ -636,9 +633,7 @@ Keep it clear and organized.
 **Minutes 8-25:** Switch to Agent Mode for Implementation
 
 1. **Switch to Agent Mode**: 
-   - Click the chat mode dropdown in the Chat view
-   - Select **"Agent"** from the list
-   - You'll see the mode switch to Agent at the top of Chat
+   - Select **"Agent"** from the chat mode dropdown list in the Chat view
 
 2. **Provide the Implementation Task** - Reference the saved diagram file:
 
@@ -718,7 +713,7 @@ Each group shows:
 
 **Architecture:**
 - ✅ Use Plan mode (custom chat mode) for strategic planning before coding
-- ✅ Switch chat modes using the dropdown in Chat view
+- ✅ Switch chat modes using the chat mode dropdown list in the Chat view
 - ✅ Have design conversations before implementation
 - ✅ Use diagrams to visualize structure
 - ✅ Evaluate multiple approaches
@@ -726,7 +721,7 @@ Each group shows:
 
 **Agent Mode:**
 - ✅ Plan first with Plan mode, then execute with Agent mode
-- ✅ Switch modes using the chat mode dropdown
+- ✅ Switch modes using the chat mode dropdown list in the Chat view
 - ✅ Great for well-defined multi-step tasks
 - ✅ You maintain control and oversight
 - ✅ Review all changes before committing
@@ -839,7 +834,7 @@ Quick Recap:
 📋 Plan mode - Architecture planning
 🤖 Agent mode - Autonomous implementation
 
-Remember: Switch modes using the chat mode dropdown in Chat view!
+Remember: Switch modes using the chat mode dropdown list in the Chat view!
 
 Your Challenge:
 Try TDD on your next user story and share your experience in Slack.
