@@ -1,10 +1,18 @@
+```prompt
 ---
 mode: 'agent'
-description: 'Implement performance dashboard feature using TDD to display investment performance metrics and comparisons'
+description: 'Implement performance dashboard feature based on architectural plan'
 ---
 
-# User Story: Performance Dashboard
+# Implementation: Performance Dashboard
 
+Implement the Performance Dashboard feature based on our architecture discussion.
+
+Architecture Reference:
+- Review our conversation above for the architecture plan
+- Check the Mermaid diagram file we created: docs/architecture/performance-dashboard-diagram.md
+
+User Story:
 As a 401k account holder
 I want to see my investment performance
 So I can track my retirement progress
@@ -15,5 +23,19 @@ Acceptance Criteria:
 - Display best/worst performing fund
 - Show contribution vs growth breakdown
 
-## Instructions
-Use TDD approach to implement this feature.
+File Structure:
+- Utilities: src/utils/performance-dashboard.js
+- Tests: src/utils/__tests__/performance-dashboard.test.js
+- Component (if time): src/components/PerformanceDashboard.jsx
+
+Requirements:
+1. Follow the architecture from our Mermaid diagram
+2. Include comprehensive input validation
+3. Add error handling with clear messages
+4. Write tests for all core functions
+5. Add JSDoc documentation
+6. Run tests to verify everything works
+
+Create the files, implement the functionality, and verify with tests.
+
+```

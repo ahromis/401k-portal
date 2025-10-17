@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+mode: 'tdd-red'
 description: 'Write a failing test for balance validation following TDD red phase principles'
 ---
 
@@ -14,3 +14,4 @@ Requirements:
 - Handle empty arrays (return 0)
 
 Help me write ONE failing test for the basic happy path case.
+Create the test file at: src/utils/__tests__/accountBalance.test.js
