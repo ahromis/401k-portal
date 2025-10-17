@@ -15,10 +15,10 @@
 |------|----------|----------|--------|
 | 0:00 | 10 min | Setup & Introduction | Presentation |
 | 0:10 | 20 min | TDD Fundamentals + Demo | Interactive Demo |
-| 0:30 | 40 min | Hands-On: TDD Red-Green-Refactor | Pairs Exercise |
-| 1:10 | 10 min | Break | - |
-| 1:20 | 20 min | Architecture & Agent Mode Demo | Interactive Demo |
-| 1:40 | 15 min | Hands-On: Build a Feature | Small Groups |
+| 0:30 | 25 min | Hands-On: TDD Red-Green-Refactor | Pairs Exercise |
+| 0:55 | 10 min | Break | - |
+| 1:05 | 20 min | Architecture & Agent Mode Demo | Interactive Demo |
+| 1:25 | 30 min | Hands-On: Build a Feature | Small Groups |
 | 1:55 | 5 min | Wrap-up & Next Steps | Discussion |
 
 ---
@@ -30,6 +30,7 @@
 - [ ] VS Code installed with latest updates
 - [ ] GitHub Copilot extension activated
 - [ ] GitHub Copilot Chat extension activated
+- [ ] [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension installed (for viewing architecture diagrams)
 - [ ] Node.js 18+ installed (`node --version`)
 - [ ] Repository cloned locally
 - [ ] Dependencies installed (`npm install`)
@@ -74,6 +75,28 @@ The repository also includes reusable prompt files in `.github/prompts/`:
 3. The prompt will run with its configured mode automatically
 
 See `.github/prompts/README.md` for a complete list of available prompts.
+
+### Custom Instructions (Optional Enhancement)
+
+**Note:** This repository does not currently include a custom instructions file, but you can generate one for your own projects.
+
+**What are custom instructions?**
+Custom instructions define coding guidelines and rules that automatically apply to all Copilot interactions in your workspace. They help ensure AI-generated code matches your team's coding practices, style preferences, and project requirements.
+
+**Why use custom instructions?**
+- Ensure consistent code style across all AI-generated code
+- Enforce team conventions (naming, error handling, documentation)
+- Apply language-specific best practices automatically
+- Reduce the need to repeat context in every chat prompt
+
+**How to generate custom instructions:**
+1. Open Copilot Chat (Cmd+I or Ctrl+I)
+2. Select **Configure Chat** > **Generate Instructions**
+3. VS Code will analyze your workspace and create a `.github/copilot-instructions.md` file
+4. Review and edit the generated instructions to match your preferences
+5. The instructions will automatically apply to all future Copilot interactions
+
+**Learn more:** [Custom Instructions Documentation](https://code.visualstudio.com/docs/copilot/customization/custom-instructions#_generate-an-instructions-file-for-your-workspace)
 
 ---
 
@@ -236,7 +259,7 @@ export function calculateTotalBalance(funds) {
 
 ---
 
-## Part 3: Hands-On TDD Exercise (40 minutes)
+## Part 3: Hands-On TDD Exercise (25 minutes)
 
 ### Exercise: Fund Transfer Validation
 
@@ -261,15 +284,15 @@ Acceptance Criteria:
 **Driver:** Controls keyboard, uses Copilot
 **Navigator:** Reviews suggestions, manages TDD cycle
 
-### Step-by-Step Process (40 min total)
+### Step-by-Step Process (25 min total)
 
-#### Round 1: Balance Validation (12 min)
+#### Round 1: Balance Validation (10 min)
 
 **Navigator says:** "Let's start with the first criteria - can't transfer more than balance"
 
 **Driver does:**
 
-1. **🔴 RED Phase (4 min)**
+1. **🔴 RED Phase (3 min)**
    - Switch to **tdd-red** mode using the chat mode dropdown
    - Use this prompt:
    
@@ -285,7 +308,7 @@ Acceptance Criteria:
 3. Run test - should FAIL ❌
 4. **Switch roles**
 
-5. **🟢 GREEN Phase (4 min)**
+5. **🟢 GREEN Phase (3 min)**
    - Switch to **tdd-green** mode using the chat mode dropdown
    - Use this prompt:
    
@@ -314,7 +337,7 @@ Acceptance Criteria:
 11. Run tests - stay GREEN ✅
 12. Commit: `git add . && git commit -m "feat: validate transfer balance"`
 
-#### Round 2: Amount Validation (12 min)
+#### Round 2: Amount Validation (10 min)
 
 **Repeat the same process for:**
 - Requirement: Cannot transfer negative or zero amounts
@@ -323,14 +346,7 @@ Acceptance Criteria:
 - **🔵 REFACTOR:** Improve quality
 - Commit when green
 
-#### Round 3: Same Fund Check (12 min)
-
-**Repeat for:**
-- Requirement: Cannot transfer to/from the same fund
-- Follow full RED-GREEN-REFACTOR cycle
-- Commit when done
-
-#### Group Share-Out (4 min)
+#### Group Share-Out (5 min)
 
 Each pair shares:
 - What surprised you?
@@ -438,7 +454,7 @@ Make the changes and verify nothing breaks.
 
 ---
 
-## Part 5: Hands-On Feature Building (15 minutes)
+## Part 5: Hands-On Feature Building (30 minutes)
 
 ### Choose Your Own Adventure
 
@@ -579,9 +595,9 @@ Create a Mermaid diagram showing:
 Keep it clear and organized.
 ```
 
-### 15-Minute Sprint Process
+### 30-Minute Sprint Process
 
-**Minutes 0-4:** Strategic Planning with Plan Mode
+**Minutes 0-8:** Strategic Planning with Plan Mode
 
 1. **Activate Plan Mode**: 
    - Open Copilot Chat (Cmd+I or Ctrl+I)
@@ -602,6 +618,8 @@ Keep it clear and organized.
 4. **Request the Mermaid Diagram**:
    ```
    [paste the Diagram Prompt from your chosen option]
+   
+   Save this as a file: docs/architecture/[feature-name]-diagram.md
    ```
    
 5. **Get the Implementation Summary**:
@@ -615,23 +633,24 @@ Keep it clear and organized.
    Format this as a clear action plan for Agent Mode.
    ```
 
-**Minutes 4-13:** Switch to Agent Mode for Implementation
+**Minutes 8-25:** Switch to Agent Mode for Implementation
 
 1. **Switch to Agent Mode**: 
    - Click the chat mode dropdown in the Chat view
    - Select **"Agent"** from the list
    - You'll see the mode switch to Agent at the top of Chat
 
-2. **Provide the Implementation Task** - Reference your plan:
+2. **Provide the Implementation Task** - Reference the saved diagram file:
 
 ```
-Implement the [feature name] feature based on the plan we created.
+Implement the [feature name] feature based on our architecture discussion.
+
+Architecture Reference:
+- Review our conversation above for the architecture plan
+- Check the Mermaid diagram file we created: docs/architecture/[feature-name]-diagram.md
 
 User Story:
 [paste acceptance criteria from your chosen option]
-
-Implementation Plan from Plan mode:
-[paste or reference the key points from Plan mode's summary]
 
 File Structure:
 - Utilities: src/utils/[feature-name].js
@@ -649,24 +668,27 @@ Requirements:
 Create the files, implement the functionality, and verify with tests.
 ```
 
+**Pro Tip:** Agent Mode can reference files in your workspace, so saving the diagram as a file makes it easy for Agent to review the architecture while implementing!
+
 3. **Watch Agent Work**:
-   - Agent will create files following your plan
-   - Implement functions based on architecture discussion
-   - Write and run tests
-   - Report progress and results
+   - Agent reviews the conversation history for context
+   - Creates files following your planned structure
+   - Implements functions based on earlier discussion
+   - Writes and run tests
+   - Reports progress and results
 
 4. **Guide Agent if Needed**:
    ```
-   Make sure the calculations match our architecture diagram
+   Review the Mermaid diagram from our earlier conversation and ensure the implementation matches
    ```
    
    or
    
    ```
-   Add more validation for edge cases we discussed
+   Check our earlier validation discussion - make sure all those edge cases are covered
    ```
 
-**Minutes 13-15:** Demo Prep
+**Minutes 25-30:** Demo Prep
 - Review the implementation Agent created
 - Verify all tests pass
 - Compare the code to your architecture diagram
