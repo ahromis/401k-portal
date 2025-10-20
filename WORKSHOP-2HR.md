@@ -334,7 +334,6 @@ Acceptance Criteria:
 
 10. Apply improvements incrementally
 11. Run tests - stay GREEN ✅
-12. Commit: `git add . && git commit -m "feat: validate transfer balance"`
 
 #### Round 2: Amount Validation (10 min)
 
@@ -343,7 +342,6 @@ Acceptance Criteria:
 - **🔴 RED:** Write failing test
 - **🟢 GREEN:** Minimal implementation
 - **🔵 REFACTOR:** Improve quality
-- Commit when green
 
 #### Group Share-Out (5 min)
 
